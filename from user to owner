@@ -1,0 +1,38 @@
+import config
+import telebot
+from telebot import types
+
+bot = telebot.TeleBot(config.token)
+
+
+@bot.message_handler(commands=["start"])
+def start(message):
+    sti = open('Open Sticker', "rb")
+    bot.send_sticker(message.chat.id, sti)
+
+    bot.send_message(message.chat.id, "Masage for user" )
+
+
+@bot.message_handler(commands=["Help"])
+def start(message):
+    bot.send_message(message.chat.id, 'Help')
+
+
+@bot.message_handler(content_types=["text"])
+def messages(message):
+    if int(message.chat.id) == int(config.owner):
+        try:
+            chatId = message.text.split(': ')[0]
+            text = message.text.split(': ')[1]
+            bot.send_message(chatId, text)
+        except:
+            pass
+    else:
+        bot.send_message(config.owner, str(message.chat.id) + ': ' + message.text)
+        bot.send_message(message.chat.id, '%s,tnx' % message.chat.username)
+        sti = open('Sticker.webp', 'rb')
+        bot.send_sticker(message.chat.id, sti)
+
+
+if __name__ == '__main__':
+    bot.polling(none_stop=True)
