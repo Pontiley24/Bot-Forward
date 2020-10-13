@@ -2,25 +2,29 @@ import config
 import telebot
 from telebot import types
 
+#add token for bot
 bot = telebot.TeleBot(config.token)
 
-
+#Start message
 @bot.message_handler(commands=["start"])
+#Bot send hello and sticker 
 def start(message):
+    #sti = sticker
     sti = open('Open Sticker', "rb")
     bot.send_sticker(message.chat.id, sti)
 
     bot.send_message(message.chat.id, "Masage for user" )
 
-
+#Help message
 @bot.message_handler(commands=["Help"])
 def start(message):
     bot.send_message(message.chat.id, 'Help')
 
-
+#Bot listn messages from user and forward to owner
 @bot.message_handler(content_types=["text"])
 def messages(message):
     if int(message.chat.id) == int(config.owner):
+        #bot send form to user
         try:
             chatId = message.text.split(': ')[0]
             text = message.text.split(': ')[1]
@@ -28,9 +32,13 @@ def messages(message):
         except:
             pass
     else:
+        #bot send forward message to owner
         bot.send_message(config.owner, str(message.chat.id) + ': ' + message.text)
+        #bot send tnx message to user
         bot.send_message(message.chat.id, '%s,tnx' % message.chat.username)
+        #sticker
         sti = open('Sticker.webp', 'rb')
+        #send good bye sticker to user
         bot.send_sticker(message.chat.id, sti)
 
 
